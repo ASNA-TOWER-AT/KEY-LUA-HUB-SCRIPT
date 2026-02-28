@@ -13,7 +13,7 @@ body { background:#0f0f0f; color:white; }
 #loading{
   position:fixed; width:100%; height:100%; background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:999;
 }
-#loading h1{ font-size:50px; color:#00ffc8; margin-bottom:20px; }
+#loadingLogo{ width:200px; max-width:50%; height:auto; margin-bottom:20px; }
 #progressBar{ width:300px; height:20px; background:#222; border-radius:10px; overflow:hidden; margin-bottom:20px;}
 #progressFill{ width:0%; height:100%; background:#00ffc8; transition:width 0.2s;}
 #skip{ padding:10px 25px; background:#00ffc8; border:none; cursor:pointer; border-radius:5px; color:#000; font-weight:bold;}
@@ -61,7 +61,7 @@ button.uploadBtn, button.editBtn{ background:#00ffc8; color:#000; border:none; p
 
 <!-- Loading -->
 <div id="loading">
-  <h1>AT™</h1>
+  <img id="loadingLogo" src="https://via.placeholder.com/200x100?text=AT%E2%84%A2" alt="AT™ Logo">
   <div id="progressBar"><div id="progressFill"></div></div>
   <button id="skip" onclick="finishLoading()">Skip</button>
   <div id="tearLeft"></div>
@@ -228,9 +228,7 @@ function createCard(item,index,type){
   // Vote
   let voteDiv=document.createElement("div"); voteDiv.className="vote";
   let likeBtn=document.createElement("button"); likeBtn.innerHTML="👍 <span>0</span>";
-  likeBtn.onclick=()=>vote(item.id,type,"like",likeBtn);
   let dislikeBtn=document.createElement("button"); dislikeBtn.innerHTML="👎 <span>0</span>";
-  dislikeBtn.onclick=()=>vote(item.id,type,"dislike",dislikeBtn);
   voteDiv.appendChild(likeBtn); voteDiv.appendChild(dislikeBtn);
   content.appendChild(voteDiv);
   // Comments
@@ -249,8 +247,8 @@ function createCard(item,index,type){
   return div;
 }
 
-// ===== Voting =====
-function vote(id,type,action,btn){
+// ===== Voting (logika lama tetap) =====
+function voteItem(id,action,btn){
   if(!currentUser){ alert("Login dulu!"); return; }
   if(!votes[currentUser]) votes[currentUser]={};
   if(!votes[currentUser][id]) votes[currentUser][id]={like:0,dislike:0};
