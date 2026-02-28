@@ -3,63 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AT Script Hub</title>
+<title>AT Script Hub - Full Final</title>
 <style>
-/* ===== Base ===== */
-* { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
-body { background:#0f0f0f; color:white; overflow-x:hidden; }
-
-/* ===== Loading ===== */
-#loading{
-  position:fixed; width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; z-index:9999;
-  animation: fadeOut 0.5s forwards; animation-delay:10s;
-}
-#loading h1{ color:#00ffc8; font-size:70px; }
-
-/* Fade out animation for loading */
-@keyframes fadeOut {
-  to { opacity:0; visibility:hidden; }
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#0f0f0f;color:white;overflow-x:hidden;}
+/* Loading */
+#loading{position:fixed;width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;z-index:9999;animation:fadeOut 0.5s forwards;animation-delay:10s;}
+#loading h1{color:#00ffc8;font-size:70px;}
+@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
 /* Header & Nav */
-#logo{ text-align:center; font-size:70px; margin:30px 0; color:#00ffc8; font-weight:bold;}
-nav{ display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-bottom:20px;}
-nav button{ padding:10px 20px; border:none; background:#00ffc8; cursor:pointer; border-radius:5px; font-weight:bold; color:#000; transition:0.2s;}
-nav button:hover{ transform:scale(1.05); }
-
-/* Page container */
-.page{ display:none; padding:10px 20px;}
-.active{ display:block;}
-
-/* Search */
-#searchBar{ width:100%; padding:8px; border-radius:5px; border:none; background:#222; color:white; margin-bottom:10px;}
-
-/* Horizontal Cards */
-.grid{ display:flex; flex-direction:column; gap:15px;}
-.card {
-  display:flex; gap:15px; background:#1c1c1c; padding:10px; border-radius:10px; box-shadow:0 0 10px #00ffc8; align-items:center; transition:transform 0.2s;
-}
-.card:hover{ transform:translateY(-3px);}
-.card img { width:150px; height:100px; object-fit:cover; border-radius:5px; flex-shrink:0; }
-.card-content { flex:1; display:flex; flex-direction:column; gap:5px; }
-.card-content h3{ margin:0; color:#00ffc8;}
-.card-content button{ margin-top:5px; padding:5px 10px; border:none; border-radius:5px; background:#00ffc8; color:#000; cursor:pointer; font-weight:bold;}
-.vote button{ margin:3px; padding:3px 7px; border:none; border-radius:5px; cursor:pointer; transition:0.2s;}
-.vote button:disabled{ opacity:0.5; cursor:not-allowed;}
-.vote button:hover:not(:disabled){ transform:scale(1.1); }
-.commentList{ margin-top:10px; max-height:100px; overflow-y:auto;}
-.comment{ background:#111; padding:5px; margin-top:5px; border-radius:5px;}
-input, textarea, select{ margin:5px 0; padding:8px; width:100%; border-radius:5px; border:none; background:#222; color:white;}
-button.uploadBtn, button.editBtn{ background:#00ffc8; color:#000; border:none; padding:10px; font-weight:bold; cursor:pointer; border-radius:5px; margin-top:10px; transition:0.2s;}
-button.uploadBtn:hover, button.editBtn:hover{ transform:scale(1.05); }
+#logo{text-align:center;font-size:70px;margin:30px 0;color:#00ffc8;font-weight:bold;}
+nav{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:20px;}
+nav button{padding:10px 20px;border:none;background:#00ffc8;cursor:pointer;border-radius:5px;font-weight:bold;color:#000;transition:0.2s;}
+nav button:hover{transform:scale(1.05);}
+/* Pages */
+.page{display:none;padding:10px 20px;}
+.active{display:block;}
+#searchBar{width:100%;padding:8px;border-radius:5px;border:none;background:#222;color:white;margin-bottom:10px;}
+/* Grid & Cards */
+.grid{display:flex;flex-direction:column;gap:15px;max-height:70vh;overflow-y:auto;}
+.card{display:flex;gap:15px;background:#1c1c1c;padding:10px;border-radius:10px;box-shadow:0 0 10px #00ffc8;align-items:center;transition:transform 0.2s;}
+.card:hover{transform:translateY(-3px);}
+.card img{width:150px;height:100px;object-fit:cover;border-radius:5px;flex-shrink:0;}
+.card-content{flex:1;display:flex;flex-direction:column;gap:5px;}
+.card-content h3{margin:0;color:#00ffc8;}
+.card-content button{margin-top:5px;padding:5px 10px;border:none;border-radius:5px;background:#00ffc8;color:#000;cursor:pointer;font-weight:bold;}
+.vote button{margin:3px;padding:3px 7px;border:none;border-radius:5px;cursor:pointer;transition:0.2s;}
+.vote button:disabled{opacity:0.5;cursor:not-allowed;}
+.vote button:hover:not(:disabled){transform:scale(1.1);}
+.commentList{margin-top:10px;max-height:100px;overflow-y:auto;}
+.comment{background:#111;padding:5px;margin-top:5px;border-radius:5px;}
+input, textarea, select{margin:5px 0;padding:8px;width:100%;border-radius:5px;border:none;background:#222;color:white;}
+button.uploadBtn, button.editBtn{background:#00ffc8;color:#000;border:none;padding:10px;font-weight:bold;cursor:pointer;border-radius:5px;margin-top:10px;transition:0.2s;}
+button.uploadBtn:hover, button.editBtn:hover{transform:scale(1.05);}
 </style>
 </head>
 <body>
 
 <!-- Loading -->
-<div id="loading">
-  <h1>AT™</h1>
-</div>
+<div id="loading"><h1>AT™</h1></div>
 
 <div id="logo">AT™</div>
 
@@ -70,7 +52,6 @@ button.uploadBtn:hover, button.editBtn:hover{ transform:scale(1.05); }
   <button onclick="showPage('login')">Login/Register</button>
 </nav>
 
-<!-- Search -->
 <input type="text" id="searchBar" placeholder="Search Game/Script" oninput="searchItems(this.value)">
 
 <!-- Pages -->
@@ -113,45 +94,39 @@ button.uploadBtn:hover, button.editBtn:hover{ transform:scale(1.05); }
 </div>
 
 <script>
-// ===== Loading Screen =====
-setTimeout(()=>{ document.getElementById("loading").style.display="none"; }, 10000);
+// Loading
+setTimeout(()=>{ document.getElementById("loading").style.display="none"; },10000);
 
-// ===== Pages =====
-function showPage(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
-}
+// Pages
+function showPage(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(page).classList.add("active");}
 
-// ===== LocalStorage =====
-let users = JSON.parse(localStorage.getItem("users")||"{}");
-let currentUser = localStorage.getItem("currentUser")||null;
-let games = JSON.parse(localStorage.getItem("games")||"[]");
-let scripts = JSON.parse(localStorage.getItem("scripts")||"[]");
-let votes = JSON.parse(localStorage.getItem("votes")||"{}");
+// Storage
+let users=JSON.parse(localStorage.getItem("users")||"{}");
+let currentUser=localStorage.getItem("currentUser")||null;
+let games=JSON.parse(localStorage.getItem("games")||"[]");
+let scripts=JSON.parse(localStorage.getItem("scripts")||"[]");
+let votes=JSON.parse(localStorage.getItem("votes")||"{}");
 
-// ===== Login/Register =====
+// Login/Register
 function register(){
   let email=document.getElementById("email").value.trim();
   let pwd=document.getElementById("password").value.trim();
-  if(!email||!pwd){ document.getElementById("loginMsg").innerText="Isi semua field"; return;}
-  if(users[email]){ document.getElementById("loginMsg").innerText="Email sudah terdaftar"; return;}
+  if(!email||!pwd){document.getElementById("loginMsg").innerText="Isi semua field";return;}
+  if(users[email]){document.getElementById("loginMsg").innerText="Email sudah terdaftar";return;}
   users[email]={password:pwd};
   localStorage.setItem("users",JSON.stringify(users));
   currentUser=email; localStorage.setItem("currentUser",currentUser);
-  document.getElementById("loginMsg").innerText="Berhasil register & login!";
-  loadItems();
+  document.getElementById("loginMsg").innerText="Berhasil register & login!";loadItems();
 }
 function login(){
   let email=document.getElementById("email").value.trim();
   let pwd=document.getElementById("password").value.trim();
-  if(users[email] && users[email].password===pwd){
-    currentUser=email; localStorage.setItem("currentUser",currentUser);
-    document.getElementById("loginMsg").innerText="Berhasil login!";
-    loadItems();
-  }else{ document.getElementById("loginMsg").innerText="Email atau password salah";}
+  if(users[email] && users[email].password===pwd){currentUser=email; localStorage.setItem("currentUser",currentUser);
+    document.getElementById("loginMsg").innerText="Berhasil login!"; loadItems();}
+  else{document.getElementById("loginMsg").innerText="Email atau password salah";}
 }
 
-// ===== Upload / Edit =====
+// Upload / Edit
 function uploadItem(){
   if(!currentUser){ alert("Login dulu!"); return; }
   let type=document.getElementById("uploadType").value;
@@ -163,43 +138,30 @@ function uploadItem(){
   let photoInput=document.getElementById("itemPhoto");
   let photoURL="";
   if(photoInput.files[0]) photoURL=URL.createObjectURL(photoInput.files[0]);
-
   let editingIndex=document.getElementById("editingIndex").value;
   let item={ name, link, code, photo:photoURL, privacy, owner:currentUser, id:Date.now() };
-  if(editingIndex){ 
+  if(editingIndex){
     if(type==="game"){ games[editingIndex]=item; localStorage.setItem("games",JSON.stringify(games)); }
     else{ scripts[editingIndex]=item; localStorage.setItem("scripts",JSON.stringify(scripts)); }
-    document.getElementById("editingIndex").value="";
-    document.getElementById("uploadMsg").innerText="Item updated!";
-  }else{ 
+    document.getElementById("editingIndex").value=""; document.getElementById("uploadMsg").innerText="Item updated!";
+  } else {
     if(type==="game"){ games.push(item); localStorage.setItem("games",JSON.stringify(games)); }
     else{ scripts.push(item); localStorage.setItem("scripts",JSON.stringify(scripts)); }
     document.getElementById("uploadMsg").innerText="Item uploaded!";
   }
-  document.getElementById("itemName").value="";
-  document.getElementById("itemLink").value="";
-  document.getElementById("itemCode").value="";
-  document.getElementById("itemPhoto").value="";
+  document.getElementById("itemName").value="";document.getElementById("itemLink").value="";document.getElementById("itemCode").value="";document.getElementById("itemPhoto").value="";
   loadItems();
 }
 
-// ===== Load Items =====
+// Load Items
 function loadItems(){
-  // Games
   let gameList=document.getElementById("gameList"); gameList.innerHTML="";
-  games.forEach((g,i)=>{
-    if(g.privacy==="private" && g.owner!==currentUser) return;
-    gameList.appendChild(createCard(g,i,"game"));
-  });
-  // Scripts
+  games.forEach((g,i)=>{ if(g.privacy==="private" && g.owner!==currentUser) return; gameList.appendChild(createCard(g,i,"game")); });
   let scriptList=document.getElementById("scriptList"); scriptList.innerHTML="";
-  scripts.forEach((s,i)=>{
-    if(s.privacy==="private" && s.owner!==currentUser) return;
-    scriptList.appendChild(createCard(s,i,"script"));
-  });
+  scripts.forEach((s,i)=>{ if(s.privacy==="private" && s.owner!==currentUser) return; scriptList.appendChild(createCard(s,i,"script")); });
 }
 
-// ===== Create Card =====
+// Create Card
 function createCard(item,index,type){
   let div=document.createElement("div"); div.className="card";
   let img=document.createElement("img"); img.src=item.photo||"https://via.placeholder.com/150x100?text=No+Image";
@@ -207,76 +169,44 @@ function createCard(item,index,type){
   content.innerHTML=`<h3>${item.name}</h3>`;
   if(type==="game" && item.link) content.innerHTML+=`<button onclick="window.open('${item.link}')">Play</button>`;
   if(type==="script" && item.code) content.innerHTML+=`<pre>${item.code}</pre>`;
-  
-  // Vote
   let voteDiv=document.createElement("div"); voteDiv.className="vote";
-  let likeBtn=document.createElement("button"); 
-  let dislikeBtn=document.createElement("button");
-  let likeCount=votes[currentUser]?.[item.id]?.like||0;
-  let dislikeCount=votes[currentUser]?.[item.id]?.dislike||0;
-  likeBtn.innerHTML=`👍 <span>${likeCount}</span>`;
-  dislikeBtn.innerHTML=`👎 <span>${dislikeCount}</span>`;
-  likeBtn.onclick=()=>voteItem(item.id,"like");
-  dislikeBtn.onclick=()=>voteItem(item.id,"dislike");
-  voteDiv.appendChild(likeBtn); voteDiv.appendChild(dislikeBtn);
-  content.appendChild(voteDiv);
-
-  // Comments
+  let likeBtn=document.createElement("button"); let dislikeBtn=document.createElement("button");
+  let likeCount=votes[currentUser]?.[item.id]?.like||0; let dislikeCount=votes[currentUser]?.[item.id]?.dislike||0;
+  likeBtn.innerHTML=`👍 <span>${likeCount}</span>`; dislikeBtn.innerHTML=`👎 <span>${dislikeCount}</span>`;
+  likeBtn.onclick=()=>voteItem(item.id,"like"); dislikeBtn.onclick=()=>voteItem(item.id,"dislike");
+  voteDiv.appendChild(likeBtn); voteDiv.appendChild(dislikeBtn); content.appendChild(voteDiv);
   let input=document.createElement("input"); input.className="commentInput"; input.placeholder="Komentar";
-  let sendBtn=document.createElement("button"); sendBtn.innerText="Kirim";
-  let commentList=document.createElement("div"); commentList.className="commentList";
-  // Load existing comments
-  let storageKey=type+"Comments";
-  let allComments=JSON.parse(localStorage.getItem(storageKey)||"{}");
-  if(allComments[item.id]){
-    allComments[item.id].forEach(c=>{
-      let divC=document.createElement("div"); divC.className="comment"; divC.innerText=c.user+": "+c.text;
-      commentList.appendChild(divC);
-    });
-  }
+  let sendBtn=document.createElement("button"); sendBtn.innerText="Kirim"; let commentList=document.createElement("div"); commentList.className="commentList";
+  let storageKey=type+"Comments"; let allComments=JSON.parse(localStorage.getItem(storageKey)||"{}");
+  if(allComments[item.id]){ allComments[item.id].forEach(c=>{ let divC=document.createElement("div"); divC.className="comment"; divC.innerText=c.user+": "+c.text; commentList.appendChild(divC); }); }
   sendBtn.onclick=()=>addComment(item.id,type,input.value,commentList);
   content.appendChild(input); content.appendChild(sendBtn); content.appendChild(commentList);
-
-  // Edit Button
-  if(currentUser===item.owner){
-    let editBtn=document.createElement("button"); editBtn.className="editBtn"; editBtn.innerText="Edit";
-    editBtn.onclick=()=>editItem(type,index);
-    content.appendChild(editBtn);
-  }
-  div.appendChild(img); div.appendChild(content);
-  return div;
+  if(currentUser===item.owner){ let editBtn=document.createElement("button"); editBtn.className="editBtn"; editBtn.innerText="Edit"; editBtn.onclick=()=>editItem(type,index); content.appendChild(editBtn);}
+  div.appendChild(img); div.appendChild(content); return div;
 }
 
-// ===== Voting =====
+// Voting
 function voteItem(id,action){
   if(!currentUser){ alert("Login dulu!"); return; }
   if(!votes[currentUser]) votes[currentUser]={};
   if(!votes[currentUser][id]) votes[currentUser][id]={like:0,dislike:0};
-  if(action==="like"){
-    if(votes[currentUser][id].like){ votes[currentUser][id].like=0; } 
-    else{ votes[currentUser][id].like=1; votes[currentUser][id].dislike=0; }
-  } else {
-    if(votes[currentUser][id].dislike){ votes[currentUser][id].dislike=0; } 
-    else{ votes[currentUser][id].dislike=1; votes[currentUser][id].like=0; }
-  }
-  localStorage.setItem("votes",JSON.stringify(votes));
-  loadItems();
+  if(action==="like"){ if(votes[currentUser][id].like){ votes[currentUser][id].like=0; } else{ votes[currentUser][id].like=1; votes[currentUser][id].dislike=0; } }
+  else{ if(votes[currentUser][id].dislike){ votes[currentUser][id].dislike=0; } else{ votes[currentUser][id].dislike=1; votes[currentUser][id].like=0; } }
+  localStorage.setItem("votes",JSON.stringify(votes)); loadItems();
 }
 
-// ===== Comments =====
+// Comments
 function addComment(id,type,text,list){
   if(!currentUser || !text) return;
-  let storageKey=type+"Comments";
-  let allComments=JSON.parse(localStorage.getItem(storageKey)||"{}");
+  let storageKey=type+"Comments"; let allComments=JSON.parse(localStorage.getItem(storageKey)||"{}");
   if(!allComments[id]) allComments[id]=[];
   allComments[id].push({user:currentUser,text});
   localStorage.setItem(storageKey,JSON.stringify(allComments));
-  let div=document.createElement("div"); div.className="comment"; div.innerText=currentUser+": "+text;
-  list.appendChild(div);
+  let div=document.createElement("div"); div.className="comment"; div.innerText=currentUser+": "+text; list.appendChild(div);
   document.querySelectorAll(".commentInput").forEach(inp=>inp.value="");
 }
 
-// ===== Edit =====
+// Edit
 function editItem(type,index){
   let item = type==="game"?games[index]:scripts[index];
   document.getElementById("uploadType").value=type;
@@ -288,16 +218,10 @@ function editItem(type,index){
   showPage("upload");
 }
 
-// ===== Search =====
-function searchItems(query){
-  query=query.toLowerCase();
-  document.querySelectorAll(".card").forEach(card=>{
-    let name=card.querySelector("h3").innerText.toLowerCase();
-    card.style.display=name.includes(query)?"flex":"none";
-  });
-}
+// Search
+function searchItems(query){query=query.toLowerCase();document.querySelectorAll(".card").forEach(card=>{let name=card.querySelector("h3").innerText.toLowerCase();card.style.display=name.includes(query)?"flex":"none";});}
 
-// ===== Init =====
+// Init
 loadItems();
 </script>
 </body>
