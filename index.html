@@ -1,123 +1,360 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AT™ Script Hub</title>
+<meta charset="UTF-8">
+<title>AT Script Hub</title>
+
 <style>
+
 body{
-font-family:Arial;
-background:#0f172a;
-color:white;
 margin:0;
-}
-
-header{
-background:#020617;
-padding:20px;
-text-align:center;
-font-size:30px;
-}
-
-nav{
-background:#1e293b;
-padding:10px;
-text-align:center;
-}
-
-button{
-padding:10px 20px;
-margin:10px;
-border:none;
-background:#22c55e;
+background:#0f0f0f;
 color:white;
+font-family:Arial;
+}
+
+/* loading */
+
+#loading{
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:999;
+}
+
+#skip{
+padding:10px 25px;
+background:#00ffc8;
+border:none;
 cursor:pointer;
 }
 
-.container{
+/* logo */
+
+#logo{
+text-align:center;
+font-size:70px;
+margin-top:30px;
+color:#00ffc8;
+font-weight:bold;
+}
+
+/* menu */
+
+nav{
+display:flex;
+justify-content:center;
+gap:20px;
+margin:30px;
+}
+
+nav button{
+padding:10px 20px;
+border:none;
+background:#00ffc8;
+cursor:pointer;
+}
+
+/* pages */
+
+.page{
+display:none;
 padding:20px;
 }
 
+.active{
+display:block;
+}
+
+/* cards */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
 .card{
-background:#1e293b;
-padding:15px;
-margin:10px 0;
+background:#1c1c1c;
+padding:20px;
 border-radius:10px;
+text-align:center;
+}
+
+/* vote */
+
+.vote button{
+margin:5px;
+}
+
+/* comments */
+
+.comment{
+background:#111;
+padding:5px;
+margin-top:5px;
 }
 
 textarea{
 width:100%;
-height:150px;
+height:120px;
 }
 
-input{
-width:100%;
-padding:10px;
-margin:5px 0;
-}
 </style>
+
 </head>
 
 <body>
 
-<header>
-AT™ GAME & SCRIPT HUB
-</header>
+<!-- loading -->
+
+<div id="loading">
+
+<h1>Loading AT™</h1>
+
+<button id="skip" onclick="startSite()">Skip</button>
+
+</div>
+
+<div id="logo">AT™</div>
 
 <nav>
-<button onclick="showHome()">Home</button>
-<button onclick="showUpload()">Upload Script</button>
+
+<button onclick="showPage('games')">Games</button>
+
+<button onclick="showPage('scripts')">Scripts</button>
+
+<button onclick="showPage('upload')">Upload</button>
+
 </nav>
 
-<div class="container" id="home">
+<!-- games -->
+
+<div id="games" class="page active">
+
+<h2>Owner Games</h2>
+
+<div class="grid">
 
 <div class="card">
-<h3>Example Script</h3>
-<p>Owner: Admin</p>
-<p>Status: ✔ Safe</p>
 
-<button onclick="like()">👍 Like</button>
-<button onclick="dislike()">👎 Dislike</button>
+<h3>ASNA MENARA</h3>
+
+<button onclick="openGame('https://www.roblox.com/id/games/15963204401/ASNA-MENARA')">PLAY</button>
+
+<div class="vote">
+
+<button onclick="like(this)">👍 <span>0</span></button>
+
+<button onclick="dislike(this)">👎 <span>0</span></button>
+
+</div>
+
+<input class="commentInput" placeholder="komentar">
+
+<button onclick="addComment(this)">kirim</button>
+
+<div class="commentList"></div>
+
+</div>
+
+<div class="card">
+
+<h3>ASNA TOWER 2</h3>
+
+<button onclick="openGame('https://www.roblox.com/id/games/110529422047015/ASNA-TOWER-2')">PLAY</button>
+
+<div class="vote">
+
+<button onclick="like(this)">👍 <span>0</span></button>
+
+<button onclick="dislike(this)">👎 <span>0</span></button>
+
+</div>
+
+<input class="commentInput" placeholder="komentar">
+
+<button onclick="addComment(this)">kirim</button>
+
+<div class="commentList"></div>
+
+</div>
+
+<div class="card">
+
+<h3>ASNA TOWER 3</h3>
+
+<button onclick="openGame('https://www.roblox.com/id/games/75451438784747/ASNA-TOWER-3')">PLAY</button>
+
+<div class="vote">
+
+<button onclick="like(this)">👍 <span>0</span></button>
+
+<button onclick="dislike(this)">👎 <span>0</span></button>
+
+</div>
+
+<input class="commentInput" placeholder="komentar">
+
+<button onclick="addComment(this)">kirim</button>
+
+<div class="commentList"></div>
+
+</div>
+
+<div class="card">
+
+<h3>BACKDOOR</h3>
+
+<button onclick="openGame('https://www.roblox.com/id/games/108306456786098/INDO-HANGOUT')">PLAY</button>
+
+<div class="vote">
+
+<button onclick="like(this)">👍 <span>0</span></button>
+
+<button onclick="dislike(this)">👎 <span>0</span></button>
+
+</div>
+
+<input class="commentInput" placeholder="komentar">
+
+<button onclick="addComment(this)">kirim</button>
+
+<div class="commentList"></div>
+
+</div>
+
+<div class="card">
+
+<h3>ESCAPE TSUNAMI</h3>
+
+<button onclick="openGame('https://www.roblox.com/id/games/131165335421057/ESCAPE-FROM-THE-TSUNAMI-AND-TAKE-HIS-CAR')">PLAY</button>
+
+<div class="vote">
+
+<button onclick="like(this)">👍 <span>0</span></button>
+
+<button onclick="dislike(this)">👎 <span>0</span></button>
+
+</div>
+
+<input class="commentInput" placeholder="komentar">
+
+<button onclick="addComment(this)">kirim</button>
+
+<div class="commentList"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- scripts -->
+
+<div id="scripts" class="page">
+
+<h2>Scripts</h2>
+
+<div id="scriptList"></div>
+
+</div>
+
+<!-- upload -->
+
+<div id="upload" class="page">
+
+<h2>Upload Script</h2>
+
+<input id="scriptName" placeholder="nama script">
 
 <br><br>
 
-<input placeholder="Write comment">
-<button>Send</button>
+<textarea id="scriptCode"></textarea>
 
-</div>
+<br><br>
 
-</div>
-
-<div class="container" id="upload" style="display:none;">
-
-<h2>Upload Script / Game</h2>
-
-<input placeholder="Game Name">
-<input placeholder="Owner Name">
-<input placeholder="Script Language">
-
-<textarea placeholder="Paste script here"></textarea>
-
-<button onclick="alert('Script Uploaded!')">Upload</button>
+<button onclick="uploadScript()">upload</button>
 
 </div>
 
 <script>
 
-function showUpload(){
-document.getElementById("home").style.display="none";
-document.getElementById("upload").style.display="block";
+function startSite(){
+document.getElementById("loading").style.display="none"
 }
 
-function showHome(){
-document.getElementById("home").style.display="block";
-document.getElementById("upload").style.display="none";
+function showPage(page){
+
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+
+document.getElementById(page).classList.add("active")
+
 }
 
-function like(){
-alert("You liked this script")
+function openGame(url){
+window.open(url)
 }
 
-function dislike(){
-alert("You disliked this script")
+function like(btn){
+
+let span=btn.querySelector("span")
+
+span.innerText=parseInt(span.innerText)+1
+
+}
+
+function dislike(btn){
+
+let span=btn.querySelector("span")
+
+span.innerText=parseInt(span.innerText)+1
+
+}
+
+function addComment(btn){
+
+let card=btn.parentElement
+
+let input=card.querySelector(".commentInput")
+
+let list=card.querySelector(".commentList")
+
+if(input.value=="")return
+
+let div=document.createElement("div")
+
+div.className="comment"
+
+div.innerText=input.value
+
+list.appendChild(div)
+
+input.value=""
+
+}
+
+function uploadScript(){
+
+let name=document.getElementById("scriptName").value
+
+let code=document.getElementById("scriptCode").value
+
+if(name==""||code=="")return
+
+let div=document.createElement("div")
+
+div.className="card"
+
+div.innerHTML="<h3>"+name+"</h3><pre>"+code+"</pre>"
+
+document.getElementById("scriptList").appendChild(div)
+
 }
 
 </script>
