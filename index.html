@@ -7,32 +7,27 @@
 <style>
 /* ===== Base ===== */
 * { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
-body { background:#0f0f0f; color:white; }
+body { background:#0f0f0f; color:white; overflow-x:hidden; }
 
 /* ===== Loading ===== */
 #loading{
-  position:fixed; width:100%; height:100%; background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:999;
+  position:fixed; width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; z-index:9999;
+  animation: fadeOut 0.5s forwards; animation-delay:10s;
 }
-#loadingLogo{ width:200px; max-width:50%; height:auto; margin-bottom:20px; }
-#progressBar{ width:300px; height:20px; background:#222; border-radius:10px; overflow:hidden; margin-bottom:20px;}
-#progressFill{ width:0%; height:100%; background:#00ffc8; transition:width 0.2s;}
-#skip{ padding:10px 25px; background:#00ffc8; border:none; cursor:pointer; border-radius:5px; color:#000; font-weight:bold;}
+#loading h1{ color:#00ffc8; font-size:70px; }
 
-/* Sobek animasi */
-#tearLeft, #tearRight{
-  position:fixed; top:0; width:50%; height:100%; background:#111; z-index:1000;
-}
-#tearLeft{ left:0; transform-origin:left center; }
-#tearRight{ right:0; transform-origin:right center; }
-@keyframes tear{
-  0% { transform: scaleX(1); }
-  100% { transform: scaleX(0); }
+/* Fade out animation for loading */
+@keyframes fadeOut {
+  to { opacity:0; visibility:hidden; }
 }
 
 /* Header & Nav */
 #logo{ text-align:center; font-size:70px; margin:30px 0; color:#00ffc8; font-weight:bold;}
 nav{ display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-bottom:20px;}
-nav button{ padding:10px 20px; border:none; background:#00ffc8; cursor:pointer; border-radius:5px; font-weight:bold; color:#000;}
+nav button{ padding:10px 20px; border:none; background:#00ffc8; cursor:pointer; border-radius:5px; font-weight:bold; color:#000; transition:0.2s;}
+nav button:hover{ transform:scale(1.05); }
+
+/* Page container */
 .page{ display:none; padding:10px 20px;}
 .active{ display:block;}
 
@@ -49,23 +44,21 @@ nav button{ padding:10px 20px; border:none; background:#00ffc8; cursor:pointer; 
 .card-content { flex:1; display:flex; flex-direction:column; gap:5px; }
 .card-content h3{ margin:0; color:#00ffc8;}
 .card-content button{ margin-top:5px; padding:5px 10px; border:none; border-radius:5px; background:#00ffc8; color:#000; cursor:pointer; font-weight:bold;}
-.vote button{ margin:3px; padding:3px 7px; border:none; border-radius:5px; cursor:pointer;}
+.vote button{ margin:3px; padding:3px 7px; border:none; border-radius:5px; cursor:pointer; transition:0.2s;}
 .vote button:disabled{ opacity:0.5; cursor:not-allowed;}
+.vote button:hover:not(:disabled){ transform:scale(1.1); }
 .commentList{ margin-top:10px; max-height:100px; overflow-y:auto;}
 .comment{ background:#111; padding:5px; margin-top:5px; border-radius:5px;}
 input, textarea, select{ margin:5px 0; padding:8px; width:100%; border-radius:5px; border:none; background:#222; color:white;}
-button.uploadBtn, button.editBtn{ background:#00ffc8; color:#000; border:none; padding:10px; font-weight:bold; cursor:pointer; border-radius:5px; margin-top:10px;}
+button.uploadBtn, button.editBtn{ background:#00ffc8; color:#000; border:none; padding:10px; font-weight:bold; cursor:pointer; border-radius:5px; margin-top:10px; transition:0.2s;}
+button.uploadBtn:hover, button.editBtn:hover{ transform:scale(1.05); }
 </style>
 </head>
 <body>
 
 <!-- Loading -->
 <div id="loading">
-  <img id="loadingLogo" src="https://via.placeholder.com/200x100?text=AT%E2%84%A2" alt="AT™ Logo">
-  <div id="progressBar"><div id="progressFill"></div></div>
-  <button id="skip" onclick="finishLoading()">Skip</button>
-  <div id="tearLeft"></div>
-  <div id="tearRight"></div>
+  <h1>AT™</h1>
 </div>
 
 <div id="logo">AT™</div>
@@ -120,19 +113,8 @@ button.uploadBtn, button.editBtn{ background:#00ffc8; color:#000; border:none; p
 </div>
 
 <script>
-// ===== Loading =====
-let progress=0;
-let loadingInterval=setInterval(()=>{
-  progress+=1;
-  document.getElementById("progressFill").style.width=progress+"%";
-  if(progress>=100){ finishLoading(); clearInterval(loadingInterval);}
-},100);
-
-function finishLoading(){
-  document.getElementById("loading").style.display="none";
-  document.getElementById("tearLeft").style.animation="tear 1s forwards";
-  document.getElementById("tearRight").style.animation="tear 1s forwards";
-}
+// ===== Loading Screen =====
+setTimeout(()=>{ document.getElementById("loading").style.display="none"; }, 10000);
 
 // ===== Pages =====
 function showPage(page){
@@ -184,12 +166,12 @@ function uploadItem(){
 
   let editingIndex=document.getElementById("editingIndex").value;
   let item={ name, link, code, photo:photoURL, privacy, owner:currentUser, id:Date.now() };
-  if(editingIndex){ // update
+  if(editingIndex){ 
     if(type==="game"){ games[editingIndex]=item; localStorage.setItem("games",JSON.stringify(games)); }
     else{ scripts[editingIndex]=item; localStorage.setItem("scripts",JSON.stringify(scripts)); }
     document.getElementById("editingIndex").value="";
     document.getElementById("uploadMsg").innerText="Item updated!";
-  }else{ // new
+  }else{ 
     if(type==="game"){ games.push(item); localStorage.setItem("games",JSON.stringify(games)); }
     else{ scripts.push(item); localStorage.setItem("scripts",JSON.stringify(scripts)); }
     document.getElementById("uploadMsg").innerText="Item uploaded!";
@@ -225,18 +207,36 @@ function createCard(item,index,type){
   content.innerHTML=`<h3>${item.name}</h3>`;
   if(type==="game" && item.link) content.innerHTML+=`<button onclick="window.open('${item.link}')">Play</button>`;
   if(type==="script" && item.code) content.innerHTML+=`<pre>${item.code}</pre>`;
+  
   // Vote
   let voteDiv=document.createElement("div"); voteDiv.className="vote";
-  let likeBtn=document.createElement("button"); likeBtn.innerHTML="👍 <span>0</span>";
-  let dislikeBtn=document.createElement("button"); dislikeBtn.innerHTML="👎 <span>0</span>";
+  let likeBtn=document.createElement("button"); 
+  let dislikeBtn=document.createElement("button");
+  let likeCount=votes[currentUser]?.[item.id]?.like||0;
+  let dislikeCount=votes[currentUser]?.[item.id]?.dislike||0;
+  likeBtn.innerHTML=`👍 <span>${likeCount}</span>`;
+  dislikeBtn.innerHTML=`👎 <span>${dislikeCount}</span>`;
+  likeBtn.onclick=()=>voteItem(item.id,"like");
+  dislikeBtn.onclick=()=>voteItem(item.id,"dislike");
   voteDiv.appendChild(likeBtn); voteDiv.appendChild(dislikeBtn);
   content.appendChild(voteDiv);
+
   // Comments
   let input=document.createElement("input"); input.className="commentInput"; input.placeholder="Komentar";
   let sendBtn=document.createElement("button"); sendBtn.innerText="Kirim";
   let commentList=document.createElement("div"); commentList.className="commentList";
+  // Load existing comments
+  let storageKey=type+"Comments";
+  let allComments=JSON.parse(localStorage.getItem(storageKey)||"{}");
+  if(allComments[item.id]){
+    allComments[item.id].forEach(c=>{
+      let divC=document.createElement("div"); divC.className="comment"; divC.innerText=c.user+": "+c.text;
+      commentList.appendChild(divC);
+    });
+  }
   sendBtn.onclick=()=>addComment(item.id,type,input.value,commentList);
   content.appendChild(input); content.appendChild(sendBtn); content.appendChild(commentList);
+
   // Edit Button
   if(currentUser===item.owner){
     let editBtn=document.createElement("button"); editBtn.className="editBtn"; editBtn.innerText="Edit";
@@ -247,15 +247,15 @@ function createCard(item,index,type){
   return div;
 }
 
-// ===== Voting (logika lama tetap) =====
-function voteItem(id,action,btn){
+// ===== Voting =====
+function voteItem(id,action){
   if(!currentUser){ alert("Login dulu!"); return; }
   if(!votes[currentUser]) votes[currentUser]={};
   if(!votes[currentUser][id]) votes[currentUser][id]={like:0,dislike:0};
   if(action==="like"){
     if(votes[currentUser][id].like){ votes[currentUser][id].like=0; } 
     else{ votes[currentUser][id].like=1; votes[currentUser][id].dislike=0; }
-  }else{
+  } else {
     if(votes[currentUser][id].dislike){ votes[currentUser][id].dislike=0; } 
     else{ votes[currentUser][id].dislike=1; votes[currentUser][id].like=0; }
   }
@@ -273,6 +273,7 @@ function addComment(id,type,text,list){
   localStorage.setItem(storageKey,JSON.stringify(allComments));
   let div=document.createElement("div"); div.className="comment"; div.innerText=currentUser+": "+text;
   list.appendChild(div);
+  document.querySelectorAll(".commentInput").forEach(inp=>inp.value="");
 }
 
 // ===== Edit =====
