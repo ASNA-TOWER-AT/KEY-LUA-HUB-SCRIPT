@@ -8,9 +8,11 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
 body{background:#0f0f0f;color:white;overflow-x:hidden;}
 /* Loading */
-#loading{position:fixed;width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;z-index:9999;animation:fadeOut 0.5s forwards;animation-delay:10s;}
-#loading h1{color:#00ffc8;font-size:70px;}
-@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
+#loading{position:fixed;width:100%;height:100%;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+#loading h1{color:#00ffc8;font-size:70px;margin-bottom:30px;}
+#progressContainer{width:60%;background:#222;height:30px;border-radius:15px;overflow:hidden;}
+#progressBar{width:0%;height:100%;background:#00ffc8;}
+#progressText{margin-top:10px;color:#fff;font-weight:bold;}
 /* Header & Nav */
 #logo{text-align:center;font-size:70px;margin:30px 0;color:#00ffc8;font-weight:bold;}
 nav{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:20px;}
@@ -41,7 +43,13 @@ button.uploadBtn:hover, button.editBtn:hover{transform:scale(1.05);}
 <body>
 
 <!-- Loading -->
-<div id="loading"><h1>AT™</h1></div>
+<div id="loading">
+  <h1>AT™</h1>
+  <div id="progressContainer">
+    <div id="progressBar"></div>
+  </div>
+  <p id="progressText">0%</p>
+</div>
 
 <div id="logo">AT™</div>
 
@@ -94,8 +102,17 @@ button.uploadBtn:hover, button.editBtn:hover{transform:scale(1.05);}
 </div>
 
 <script>
-// Loading
-setTimeout(()=>{ document.getElementById("loading").style.display="none"; },10000);
+// Loading screen progress 10 detik
+let progress = 0;
+let progressBar = document.getElementById("progressBar");
+let progressText = document.getElementById("progressText");
+let interval = setInterval(()=>{
+    progress += 10;
+    if(progress>100) progress=100;
+    progressBar.style.width = progress + "%";
+    progressText.innerText = progress + "%";
+    if(progress===100){ clearInterval(interval); setTimeout(()=>{ document.getElementById("loading").style.display="none"; },500);}
+}, 1000);
 
 // Pages
 function showPage(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(page).classList.add("active");}
@@ -126,7 +143,7 @@ function login(){
   else{document.getElementById("loginMsg").innerText="Email atau password salah";}
 }
 
-// Upload / Edit
+// Upload / Edit dengan Base64 foto permanen
 function uploadItem(){
   if(!currentUser){ alert("Login dulu!"); return; }
   let type=document.getElementById("uploadType").value;
@@ -136,10 +153,19 @@ function uploadItem(){
   let code=document.getElementById("itemCode").value.trim();
   let privacy=document.getElementById("privacySelect").value;
   let photoInput=document.getElementById("itemPhoto");
-  let photoURL="";
-  if(photoInput.files[0]) photoURL=URL.createObjectURL(photoInput.files[0]);
+  if(photoInput.files[0]){
+    let reader=new FileReader();
+    reader.onload=function(e){
+      let photoBase64=e.target.result;
+      saveItem(type,name,link,code,privacy,photoBase64);
+    }
+    reader.readAsDataURL(photoInput.files[0]);
+  } else { saveItem(type,name,link,code,privacy,""); }
+}
+
+function saveItem(type,name,link,code,privacy,photo){
   let editingIndex=document.getElementById("editingIndex").value;
-  let item={ name, link, code, photo:photoURL, privacy, owner:currentUser, id:Date.now() };
+  let item={ name, link, code, photo, privacy, owner:currentUser, id:Date.now() };
   if(editingIndex){
     if(type==="game"){ games[editingIndex]=item; localStorage.setItem("games",JSON.stringify(games)); }
     else{ scripts[editingIndex]=item; localStorage.setItem("scripts",JSON.stringify(scripts)); }
