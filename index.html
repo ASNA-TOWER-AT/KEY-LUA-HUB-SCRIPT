@@ -6,74 +6,70 @@
 <title>AT Script Hub</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#0f0f0f;color:white}
+
+body{
+background:#0f0f0f;
+color:white;
+font-family:Arial;
+margin:0;
+}
 
 #logo{
-text-align:center;
 font-size:60px;
-margin:20px;
+text-align:center;
 color:#00ffc8;
+margin:20px;
 }
 
 nav{
 display:flex;
 justify-content:center;
 gap:10px;
-margin-bottom:20px;
-flex-wrap:wrap
+flex-wrap:wrap;
 }
 
 nav button{
 padding:10px 20px;
-border:none;
 background:#00ffc8;
-font-weight:bold;
+border:none;
+border-radius:5px;
 cursor:pointer;
-border-radius:5px
 }
 
-.page{display:none;padding:20px}
-.active{display:block}
+.page{
+display:none;
+padding:20px;
+}
+
+.active{
+display:block;
+}
 
 .grid{
 display:flex;
 flex-direction:column;
-gap:15px
+gap:15px;
 }
 
 .card{
-display:flex;
-gap:15px;
 background:#1c1c1c;
-padding:10px;
+padding:15px;
 border-radius:10px;
-box-shadow:0 0 10px #00ffc8
-}
-
-.card img{
-width:150px;
-height:100px;
-object-fit:cover
+box-shadow:0 0 10px #00ffc8;
 }
 
 input,textarea,select{
 width:100%;
-padding:8px;
+padding:10px;
 margin-top:5px;
 background:#222;
 border:none;
 border-radius:5px;
-color:white
+color:white;
 }
 
-.uploadBtn{
+button{
 margin-top:10px;
-padding:10px;
-background:#00ffc8;
-border:none;
-font-weight:bold;
-cursor:pointer
 }
 
 </style>
@@ -81,18 +77,20 @@ cursor:pointer
 
 <body>
 
-<div id="logo">AT™ Script Hub</div>
+<div id="logo">AT™</div>
 
 <nav>
+
 <button onclick="showPage('games')">Games</button>
 <button onclick="showPage('scripts')">Scripts</button>
 <button onclick="showPage('upload')">Upload</button>
 <button onclick="showPage('login')">Login</button>
+
 </nav>
 
 <!-- LOGIN -->
 
-<div id="login" class="page">
+<div id="login" class="page active">
 
 <h2>Login / Register</h2>
 
@@ -101,8 +99,8 @@ cursor:pointer
 <input id="password" type="password" placeholder="Password">
 
 <button onclick="register()">Register</button>
-
 <button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
 
 <p id="loginMsg"></p>
 
@@ -110,7 +108,7 @@ cursor:pointer
 
 <!-- GAMES -->
 
-<div id="games" class="page active">
+<div id="games" class="page">
 
 <h2>Games</h2>
 
@@ -135,25 +133,33 @@ cursor:pointer
 <h2>Upload</h2>
 
 <select id="uploadType">
+
 <option value="game">Game</option>
 <option value="script">Script</option>
+
 </select>
 
 <input id="itemName" placeholder="Nama">
+<input id="itemLink" placeholder="Link">
+<textarea id="itemCode" placeholder="Script Code"></textarea>
 
-<input id="itemLink" placeholder="Link Game">
-
-<textarea id="itemCode" placeholder="Script code"></textarea>
-
-<button class="uploadBtn" onclick="uploadItem()">Upload</button>
+<button onclick="uploadItem()">Upload</button>
 
 </div>
 
-<!-- FIREBASE -->
-
 <script type="module">
 
+/* FIREBASE */
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
 
 import {
 getFirestore,
@@ -162,12 +168,7 @@ addDoc,
 getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
 
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
-
+/* CONFIG */
 
 const firebaseConfig = {
 apiKey: "AIzaSyBZPDqoF3pqPvVXVigbfBlolHAakohx_VY",
@@ -179,14 +180,17 @@ appId: "1:278571146405:web:bb7fbacf8ec3fb54fec14c",
 measurementId: "G-8PYQB40E2B"
 }
 
-const app = initializeApp(firebaseConfig)
+/* INIT */
 
-const db = getFirestore(app)
+const app = initializeApp(firebaseConfig)
 
 const auth = getAuth(app)
 
-let currentUser=null
+const db = getFirestore(app)
 
+let currentUser = null
+
+/* PAGE */
 
 window.showPage=function(page){
 
@@ -196,6 +200,7 @@ document.getElementById(page).classList.add("active")
 
 }
 
+/* AUTH */
 
 window.register=async function(){
 
@@ -206,16 +211,15 @@ try{
 
 await createUserWithEmailAndPassword(auth,email,pass)
 
-document.getElementById("loginMsg").innerText="Register sukses"
+loginMsg.innerText="Register berhasil"
 
 }catch(e){
 
-document.getElementById("loginMsg").innerText=e.message
+loginMsg.innerText=e.message
 
 }
 
 }
-
 
 window.login=async function(){
 
@@ -224,20 +228,31 @@ let pass=document.getElementById("password").value
 
 try{
 
-let user=await signInWithEmailAndPassword(auth,email,pass)
+await signInWithEmailAndPassword(auth,email,pass)
 
-currentUser=user.user.email
-
-document.getElementById("loginMsg").innerText="Login sukses"
+loginMsg.innerText="Login berhasil"
 
 }catch(e){
 
-document.getElementById("loginMsg").innerText=e.message
+loginMsg.innerText=e.message
 
 }
 
 }
 
+window.logout=function(){
+
+signOut(auth)
+
+}
+
+onAuthStateChanged(auth,user=>{
+
+currentUser=user
+
+})
+
+/* UPLOAD */
 
 window.uploadItem=async function(){
 
@@ -256,11 +271,10 @@ let code=document.getElementById("itemCode").value
 
 await addDoc(collection(db,type+"s"),{
 
-name:name,
-link:link,
-code:code,
-owner:currentUser,
-time:Date.now()
+name,
+link,
+code,
+user:currentUser.email
 
 })
 
@@ -268,15 +282,17 @@ loadItems()
 
 }
 
+/* LOAD DATA */
 
 async function loadItems(){
 
 let gameList=document.getElementById("gameList")
+
 gameList.innerHTML=""
 
-let games=await getDocs(collection(db,"games"))
+let gameSnap=await getDocs(collection(db,"games"))
 
-games.forEach(doc=>{
+gameSnap.forEach(doc=>{
 
 let g=doc.data()
 
@@ -286,15 +302,8 @@ card.className="card"
 
 card.innerHTML=`
 
-<img src="https://via.placeholder.com/150">
-
-<div>
-
 <h3>${g.name}</h3>
-
 <button onclick="window.open('${g.link}')">Play</button>
-
-</div>
 
 `
 
@@ -302,13 +311,13 @@ gameList.appendChild(card)
 
 })
 
-
 let scriptList=document.getElementById("scriptList")
+
 scriptList.innerHTML=""
 
-let scripts=await getDocs(collection(db,"scripts"))
+let scriptSnap=await getDocs(collection(db,"scripts"))
 
-scripts.forEach(doc=>{
+scriptSnap.forEach(doc=>{
 
 let s=doc.data()
 
@@ -318,15 +327,8 @@ card.className="card"
 
 card.innerHTML=`
 
-<img src="https://via.placeholder.com/150">
-
-<div>
-
 <h3>${s.name}</h3>
-
 <pre>${s.code}</pre>
-
-</div>
 
 `
 
