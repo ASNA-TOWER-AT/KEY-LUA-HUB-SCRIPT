@@ -3,102 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AT Script Hub V1.0.0</title>
-
+<title>AT Script Hub V.1.0.1</title>
 <style>
-body{
-background:#0f0f0f;
-color:white;
-font-family:Arial;
-margin:0;
-}
-
-#logo{
-font-size:60px;
-text-align:center;
-color:#00ffc8;
-margin:20px;
-}
-
-nav{
-display:flex;
-justify-content:center;
-gap:10px;
-flex-wrap:wrap;
-}
-
-nav button{
-padding:10px 20px;
-background:#00ffc8;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-
-.page{
-display:none;
-padding:20px;
-}
-
-.active{
-display:block;
-}
-
-.grid{
-display:flex;
-flex-direction:column;
-gap:15px;
-}
-
-.card{
-background:#1c1c1c;
-padding:15px;
-border-radius:10px;
-box-shadow:0 0 10px #00ffc8;
-position:relative;
-}
-
-input,textarea,select{
-width:100%;
-padding:10px;
-margin-top:5px;
-background:#222;
-border:none;
-border-radius:5px;
-color:white;
-}
-
-button{
-margin-top:10px;
-}
-
-#userInfo{
-display:none;
-position:fixed;
-top:10px;
-right:10px;
-align-items:center;
-gap:5px;
-color:white;
-}
-
-#userInfo img{
-width:35px;
-height:35px;
-border-radius:50%;
-}
-
-#versionLabel{
-font-size:14px;
-color:#00ffc8;
-margin-left:10px;
-}
+body{background:#0f0f0f;color:white;font-family:Arial;margin:0;}
+#logo{font-size:60px;text-align:center;color:#00ffc8;margin:20px;}
+nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+nav button{padding:10px 20px;background:#00ffc8;border:none;border-radius:5px;cursor:pointer;}
+.page{display:none;padding:20px;}
+.active{display:block;}
+.grid{display:flex;flex-direction:column;gap:15px;}
+.card{background:#1c1c1c;padding:15px;border-radius:10px;box-shadow:0 0 10px #00ffc8;position:relative;}
+input,textarea,select{width:100%;padding:10px;margin-top:5px;background:#222;border:none;border-radius:5px;color:white;}
+button{margin-top:10px;}
+#userInfo{position:absolute;top:10px;right:10px;display:flex;align-items:center;gap:5px;}
+#userInfo img{width:30px;height:30px;border-radius:50%;}
 </style>
 </head>
-
 <body>
 
 <div id="logo">AT™</div>
+<div id="userInfo" style="display:none;">
+  <img id="userPhoto" src="">
+  <span id="userEmail"></span>
+  <span>V.1.0.1</span>
+  <button onclick="logout()">Logout</button>
+</div>
 
 <nav>
 <button onclick="showPage('games')">Games</button>
@@ -106,13 +35,6 @@ margin-left:10px;
 <button onclick="showPage('upload')">Upload</button>
 <button id="loginBtn" onclick="showPage('login')">Login</button>
 </nav>
-
-<div id="userInfo">
-<img id="userPhoto" src="">
-<span id="userEmail"></span>
-<span id="versionLabel">V.1.0.0</span>
-<button onclick="logout()">Logout</button>
-</div>
 
 <!-- LOGIN -->
 <div id="login" class="page">
@@ -144,19 +66,17 @@ margin-left:10px;
 <option value="script">Script</option>
 </select>
 <input id="itemName" placeholder="Nama">
-<input id="itemLink" placeholder="Link / Kosong untuk script">
-<textarea id="itemCode" placeholder="Script Code / Kosong untuk game"></textarea>
+<input id="itemLink" placeholder="Link (hanya game)">
+<textarea id="itemCode" placeholder="Script Code (hanya script)"></textarea>
 <textarea id="itemDesc" placeholder="Deskripsi"></textarea>
 <button onclick="uploadItem()">Upload</button>
-<p id="uploadMsg"></p>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
-import { getFirestore, collection, addDoc, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG */
 const firebaseConfig = {
 apiKey: "AIzaSyBZPDqoF3pqPvVXVigbfBlolHAakohx_VY",
 authDomain: "at-data-174bc.firebaseapp.com",
@@ -165,159 +85,153 @@ storageBucket: "at-data-174bc.firebasestorage.app",
 messagingSenderId: "278571146405",
 appId: "1:278571146405:web:bb7fbacf8ec3fb54fec14c",
 measurementId: "G-8PYQB40E2B"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let userGameViews = {};
+let userScriptViews = {};
+
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
 }
 
-/* INIT */
-const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
-const db = getFirestore(app)
-let currentUser = null
-let userViews = {} // untuk track 1 akun 1 view
-
-/* PAGE */
-window.showPage = function(page){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-document.getElementById(page).classList.add("active")
+async function register(){
+  let email=document.getElementById("email").value
+  let pass=document.getElementById("password").value
+  try{
+    await createUserWithEmailAndPassword(auth,email,pass)
+    loginMsg.innerText="Register berhasil"
+  }catch(e){loginMsg.innerText=e.message}
 }
 
-/* AUTH */
-window.register=async function(){
-let email=document.getElementById("email").value
-let pass=document.getElementById("password").value
-try{
-await createUserWithEmailAndPassword(auth,email,pass)
-document.getElementById("loginMsg").innerText="Register berhasil"
-}catch(e){
-document.getElementById("loginMsg").innerText=e.message
-}
+async function login(){
+  let email=document.getElementById("email").value
+  let pass=document.getElementById("password").value
+  try{
+    await signInWithEmailAndPassword(auth,email,pass)
+    loginMsg.innerText="Login berhasil"
+  }catch(e){loginMsg.innerText=e.message}
 }
 
-window.login=async function(){
-let email=document.getElementById("email").value
-let pass=document.getElementById("password").value
-try{
-await signInWithEmailAndPassword(auth,email,pass)
-document.getElementById("loginMsg").innerText="Login berhasil"
-}catch(e){
-document.getElementById("loginMsg").innerText=e.message
-}
+function logout(){
+  signOut(auth)
+  document.getElementById("loginBtn").style.display="inline-block";
+  document.getElementById("userInfo").style.display="none";
 }
 
-window.logout=function(){
-signOut(auth)
-}
-
-/* UPDATE UPLOAD FORM */
-window.updateUploadForm = function(){
-const type = document.getElementById("uploadType").value
-if(type=="game"){
-document.getElementById("itemLink").style.display="block"
-document.getElementById("itemCode").style.display="none"
-}else{
-document.getElementById("itemLink").style.display="none"
-document.getElementById("itemCode").style.display="block"
-}
-}
-
-/* ON AUTH CHANGE */
 onAuthStateChanged(auth,user=>{
-currentUser=user
-const loginBtn = document.getElementById("loginBtn")
-const userInfo = document.getElementById("userInfo")
-const userEmail = document.getElementById("userEmail")
-const userPhoto = document.getElementById("userPhoto")
-if(user){
-loginBtn.style.display="none"
-userInfo.style.display="flex"
-userEmail.innerText=user.email
-userPhoto.src=`https://ui-avatars.com/api/?name=${user.email}`
-}else{
-loginBtn.style.display="inline-block"
-userInfo.style.display="none"
-}
-loadItems()
+  currentUser=user
+  if(user){
+    document.getElementById("loginBtn").style.display="none";
+    document.getElementById("userInfo").style.display="flex";
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("userPhoto").src = `https://ui-avatars.com/api/?name=${user.email}&background=00ffc8&color=000000`;
+    loadItems();
+  }
 })
 
-/* UPLOAD */
-window.uploadItem=async function(){
-if(!currentUser){ alert("Login dulu"); return }
-
-const type=document.getElementById("uploadType").value
-const name=document.getElementById("itemName").value
-const link=document.getElementById("itemLink").value
-const code=document.getElementById("itemCode").value
-const desc=document.getElementById("itemDesc").value
-
-if(!name || (type=="game" && !link) || (type=="script" && !code)){
-document.getElementById("uploadMsg").innerText="Isi semua field yang diperlukan!"
-return
+function updateUploadForm(){
+  let type=document.getElementById("uploadType").value;
+  document.getElementById("itemLink").style.display = (type=="game") ? "block" : "none";
+  document.getElementById("itemCode").style.display = (type=="script") ? "block" : "none";
 }
 
-await addDoc(collection(db,type+"s"),{
-name, link, code, desc, user:currentUser.email, views:0, likes:0
-})
-document.getElementById("uploadMsg").innerText="Upload berhasil!"
-loadItems()
+async function uploadItem(){
+  if(!currentUser){alert("Login dulu"); return;}
+  let type=document.getElementById("uploadType").value;
+  let name=document.getElementById("itemName").value.trim();
+  let link=document.getElementById("itemLink").value.trim();
+  let code=document.getElementById("itemCode").value.trim();
+  let desc=document.getElementById("itemDesc").value.trim();
+
+  if(!name || (type=="game" && !link) || (type=="script" && !code)){alert("Harap isi semua field yang dibutuhkan"); return;}
+
+  await addDoc(collection(db,type+"s"),{
+    name, link, code, desc, user:currentUser.email, views:0
+  });
+  loadItems();
 }
 
-/* LOAD ITEMS */
 async function loadItems(){
-const gameList = document.getElementById("gameList")
-gameList.innerHTML=""
-const gameSnap = await getDocs(collection(db,"games"))
-gameSnap.forEach(docSnap=>{
-const g = docSnap.data()
-const card = document.createElement("div")
-card.className="card"
-card.innerHTML=`
-<h3>${g.name}</h3>
-<p>${g.desc||''}</p>
-<button onclick="playGame('${docSnap.id}','${g.link}')">Play</button>
-`
-gameList.appendChild(card)
-})
+  const gameList=document.getElementById("gameList"); gameList.innerHTML="";
+  const scriptList=document.getElementById("scriptList"); scriptList.innerHTML="";
 
-const scriptList = document.getElementById("scriptList")
-scriptList.innerHTML=""
-const scriptSnap = await getDocs(collection(db,"scripts"))
-scriptSnap.forEach(docSnap=>{
-const s = docSnap.data()
-const card = document.createElement("div")
-card.className="card"
-card.innerHTML=`
-<h3>${s.name}</h3>
-<p>${s.desc||''}</p>
-<pre>${s.code}</pre>
-<button onclick="copyScript('${s.code}','${docSnap.id}')">Copy</button>
-`
-scriptList.appendChild(card)
-})
-}
+  let gameSnap=await getDocs(collection(db,"games"));
+  gameSnap.forEach(doc=>{
+    let g=doc.data();
+    let card=document.createElement("div"); card.className="card";
+    card.innerHTML=`
+      <h3>${g.name}</h3>
+      <p>${g.desc || ""}</p>
+      <button onclick="playGame('${doc.id}','${g.link}')">Play</button>
+      <span>Views: ${g.views||0}</span>
+      ${currentUser && g.user===currentUser.email ? `<button onclick="editItem('games','${doc.id}')">Edit</button> <button onclick="deleteItem('games','${doc.id}')">Delete</button>` : ""}
+    `;
+    gameList.appendChild(card);
+  });
 
-/* VIEWS */
-window.playGame = async function(id,link){
-if(currentUser && !userViews[id]){
-userViews[id] = true
-const ref = doc(db,"games",id)
-const data = await getDocs(collection(db,"games"))
-await updateDoc(ref,{views:(data.views||0)+1})
-}
-window.open(link)
+  let scriptSnap=await getDocs(collection(db,"scripts"));
+  scriptSnap.forEach(doc=>{
+    let s=doc.data();
+    let card=document.createElement("div"); card.className="card";
+    card.innerHTML=`
+      <h3>${s.name}</h3>
+      <p>${s.desc || ""}</p>
+      <pre>${s.code}</pre>
+      <button onclick="copyScript('${s.code}','${doc.id}')">Copy</button>
+      <span>Views: ${s.views||0}</span>
+      ${currentUser && s.user===currentUser.email ? `<button onclick="editItem('scripts','${doc.id}')">Edit</button> <button onclick="deleteItem('scripts','${doc.id}')">Delete</button>` : ""}
+    `;
+    scriptList.appendChild(card);
+  });
 }
 
-window.copyScript = async function(code,id){
-navigator.clipboard.writeText(code)
-if(currentUser && !userViews[id]){
-userViews[id] = true
-const ref = doc(db,"scripts",id)
-await updateDoc(ref,{views:1})
-alert("Copied!")
-}
+async function playGame(id,link){
+  if(currentUser && !userGameViews[id]){
+    userGameViews[id]=true;
+    const ref = doc(db,"games",id);
+    await updateDoc(ref,{views:(await getDocs(collection(db,"games"))).docs.find(d=>d.id===id).data().views+1});
+  }
+  window.open(link);
 }
 
-/* INIT */
-loadItems()
-updateUploadForm()
+async function copyScript(code,id){
+  navigator.clipboard.writeText(code);
+  if(currentUser && !userScriptViews[id]){
+    userScriptViews[id]=true;
+    const ref = doc(db,"scripts",id);
+    await updateDoc(ref,{views:(await getDocs(collection(db,"scripts"))).docs.find(d=>d.id===id).data().views+1});
+  }
+  alert("Copied!");
+}
+
+async function editItem(type,id){
+  const col = collection(db,type);
+  const docRef = doc(db,type,id);
+  const snap = await getDocs(col);
+  const data = snap.docs.find(d=>d.id===id).data();
+  let newName=prompt("Edit Name",data.name);
+  let newLink=type=="game"?prompt("Edit Link",data.link):data.link;
+  let newCode=type=="script"?prompt("Edit Code",data.code):data.code;
+  let newDesc=prompt("Edit Desc",data.desc||"");
+  if(newName) await updateDoc(docRef,{name:newName,link:newLink,code:newCode,desc:newDesc});
+  loadItems();
+}
+
+async function deleteItem(type,id){
+  if(confirm("Hapus item ini?")){
+    await deleteDoc(doc(db,type,id));
+    loadItems();
+  }
+}
+
+loadItems();
+
 </script>
 
 </body>
