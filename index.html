@@ -12,21 +12,18 @@ color:white;
 font-family:Arial;
 margin:0;
 }
-
 #logo{
 font-size:60px;
 text-align:center;
 color:#00ffc8;
 margin:20px;
 }
-
 nav{
 display:flex;
 justify-content:center;
 gap:10px;
 flex-wrap:wrap;
 }
-
 nav button{
 padding:10px 20px;
 background:#00ffc8;
@@ -34,29 +31,24 @@ border:none;
 border-radius:5px;
 cursor:pointer;
 }
-
 .page{
 display:none;
 padding:20px;
 }
-
 .active{
 display:block;
 }
-
 .grid{
 display:flex;
 flex-direction:column;
 gap:15px;
 }
-
 .card{
 background:#1c1c1c;
 padding:15px;
 border-radius:10px;
 box-shadow:0 0 10px #00ffc8;
 }
-
 input,textarea,select{
 width:100%;
 padding:10px;
@@ -66,7 +58,6 @@ border:none;
 border-radius:5px;
 color:white;
 }
-
 button{
 margin-top:10px;
 }
@@ -237,6 +228,31 @@ views: increment(1)
 window.open(link,"_blank")
 }
 
+window.copyScript = async function(id,code){
+
+if(!currentUser){
+alert("Login dulu")
+return
+}
+
+let viewRef = doc(db,"views",id+"_"+currentUser.uid)
+let viewSnap = await getDoc(viewRef)
+
+if(!viewSnap.exists()){
+await setDoc(viewRef,{
+itemId:id,
+userId:currentUser.uid
+})
+
+await updateDoc(doc(db,"scripts",id),{
+views: increment(1)
+})
+}
+
+navigator.clipboard.writeText(code)
+alert("Script dicopy")
+}
+
 async function loadItems(){
 
 let gameList=document.getElementById("gameList")
@@ -267,11 +283,17 @@ let scriptSnap=await getDocs(collection(db,"scripts"))
 
 scriptSnap.forEach(d=>{
 let s=d.data()
+let id=d.id
+
+if(!s.views){ s.views=0 }
+
 let card=document.createElement("div")
 card.className="card"
 card.innerHTML=`
 <h3>${s.name}</h3>
+<p>👁 ${s.views}</p>
 <pre>${s.code}</pre>
+<button onclick="copyScript('${id}',\`${s.code}\`)">Copy</button>
 `
 scriptList.appendChild(card)
 })
