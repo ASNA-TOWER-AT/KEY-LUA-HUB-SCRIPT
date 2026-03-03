@@ -60,6 +60,21 @@ color:white;
 }
 button{
 margin-top:10px;
+cursor:pointer;
+}
+#userInfo{
+position:fixed;
+top:10px;
+right:10px;
+display:flex;
+align-items:center;
+gap:10px;
+color:#00ffc8;
+}
+#userInfo img{
+width:40px;
+height:40px;
+border-radius:50%;
 }
 </style>
 </head>
@@ -72,8 +87,15 @@ margin-top:10px;
 <button onclick="showPage('games')">Games</button>
 <button onclick="showPage('scripts')">Scripts</button>
 <button onclick="showPage('upload')">Upload</button>
-<button onclick="showPage('login')">Login</button>
+<button id="loginBtn" onclick="showPage('login')">Login</button>
 </nav>
+
+<div id="userInfo" style="display:none;">
+<img id="userPhoto" src="">
+<span id="userEmail"></span>
+<span>V.1.0.0</span>
+<button onclick="logout()">Logout</button>
+</div>
 
 <div id="login" class="page active">
 <h2>Login / Register</h2>
@@ -81,7 +103,6 @@ margin-top:10px;
 <input id="password" type="password" placeholder="Password">
 <button onclick="register()">Register</button>
 <button onclick="login()">Login</button>
-<button onclick="logout()">Logout</button>
 <p id="loginMsg"></p>
 </div>
 
@@ -125,9 +146,9 @@ addDoc,
 getDocs,
 doc,
 getDoc,
-setDoc,
 updateDoc,
-increment
+increment,
+setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
 
 const firebaseConfig = {
@@ -167,18 +188,33 @@ loginMsg.innerText="Login berhasil"
 }catch(e){loginMsg.innerText=e.message}
 }
 
-window.logout=function(){signOut(auth)}
+window.logout=function(){
+signOut(auth)
+currentUser=null
+userInfo.style.display="none"
+loginBtn.style.display="inline-block"
+}
 
-onAuthStateChanged(auth,user=>{currentUser=user})
+onAuthStateChanged(auth,user=>{
+currentUser=user
+if(user){
+loginBtn.style.display="none"
+userInfo.style.display="flex"
+userEmail.innerText=user.email
+userPhoto.src=`https://ui-avatars.com/api/?name=${user.email}`
+}
+loadItems()
+})
 
 window.uploadItem=async function(){
-
 if(!currentUser){alert("Login dulu");return}
 
 let type=uploadType.value
 let name=itemName.value
 let link=itemLink.value
 let code=itemCode.value
+
+if(!name || (type==="game" && !link) || (type==="script" && !code)){alert("Lengkapi semua field");return}
 
 if(editingId){
 await updateDoc(doc(db,type+"s",editingId),{name,link,code})
@@ -213,10 +249,7 @@ itemCode.value=""
 }
 
 window.editItem=function(id,type,data){
-if(!currentUser || currentUser.email!==data.user){
-alert("Bukan punya kamu")
-return
-}
+if(!currentUser || currentUser.email!==data.user){alert("Bukan punya kamu");return}
 editingId=id
 editingType=type
 uploadType.value=type
@@ -256,7 +289,6 @@ async function loadItems(){
 
 gameList.innerHTML=""
 let gameSnap=await getDocs(collection(db,"games"))
-
 gameSnap.forEach(d=>{
 let g=d.data()
 let id=d.id
@@ -278,7 +310,6 @@ gameList.appendChild(card)
 
 scriptList.innerHTML=""
 let scriptSnap=await getDocs(collection(db,"scripts"))
-
 scriptSnap.forEach(d=>{
 let s=d.data()
 let id=d.id
