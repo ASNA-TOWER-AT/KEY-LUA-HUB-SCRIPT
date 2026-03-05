@@ -305,7 +305,7 @@ alert("Script copied!");
 
 };
 
-/* EDIT SCRIPT FIX */
+/* EDIT SCRIPT */
 
 window.editScript = async function(id){
 
@@ -330,11 +330,41 @@ const newDesc = prompt("Edit Deskripsi", data.desc || "");
 const newCode = prompt("Edit Script", data.code);
 
 await updateDoc(docRef,{
-
 name:newName,
 desc:newDesc,
 code:newCode
+});
 
+loadItems();
+
+};
+
+/* EDIT GAME (DITAMBAHKAN) */
+
+window.editGame = async function(id){
+
+const docRef = doc(db,"games",id);
+const snap = await getDoc(docRef);
+
+if(!snap.exists()) return;
+
+const data = snap.data();
+
+if(currentUser.email !== data.user && currentUser.email !== "evosrezasyah@gmail.com"){
+
+alert("Kamu tidak punya izin edit!");
+return;
+
+}
+
+const newName = prompt("Edit Nama Game", data.name);
+const newDesc = prompt("Edit Deskripsi", data.desc || "");
+const newLink = prompt("Edit Link Game", data.link);
+
+await updateDoc(docRef,{
+name:newName,
+desc:newDesc,
+link:newLink
 });
 
 loadItems();
@@ -346,7 +376,6 @@ window.deleteItem = async function(type,id){
 if(!currentUser) return;
 
 const docRef = doc(db,type,id);
-
 const snap = await getDoc(docRef);
 
 if(!snap.exists()) return;
@@ -356,7 +385,6 @@ const data = snap.data();
 if(currentUser.email !== data.user && currentUser.email !== "evosrezasyah@gmail.com"){
 
 alert("Kamu tidak punya izin untuk menghapus ini!");
-
 return;
 
 }
@@ -370,7 +398,6 @@ loadItems();
 async function loadItems(){
 
 const gameList = document.getElementById("gameList");
-
 gameList.innerHTML="";
 
 const gameSnap = await getDocs(collection(db,"games"));
@@ -380,14 +407,13 @@ gameSnap.forEach(docItem=>{
 let g = docItem.data();
 
 let card = document.createElement("div");
-
 card.className="card";
 
 let actions='';
 
 if(currentUser && (currentUser.email===g.user || currentUser.email==='evosrezasyah@gmail.com')){
 
-actions=`<button onclick="editScript('${docItem.id}')">Edit</button>
+actions=`<button onclick="editGame('${docItem.id}')">Edit</button>
 <button onclick="deleteItem('games','${docItem.id}')">Delete</button>`;
 
 }
@@ -395,11 +421,8 @@ actions=`<button onclick="editScript('${docItem.id}')">Edit</button>
 card.innerHTML=`
 
 <h3>${g.name}</h3>
-
 <p>${g.desc || ''}</p>
-
 <button onclick="playGame('${docItem.id}','${g.link}')">Play</button>
-
 ${actions}
 
 `;
@@ -409,7 +432,6 @@ gameList.appendChild(card);
 });
 
 const scriptList = document.getElementById("scriptList");
-
 scriptList.innerHTML="";
 
 const scriptSnap = await getDocs(collection(db,"scripts"));
@@ -419,7 +441,6 @@ scriptSnap.forEach(docItem=>{
 let s = docItem.data();
 
 let card = document.createElement("div");
-
 card.className="card";
 
 let actions='';
@@ -434,13 +455,9 @@ actions=`<button onclick="editScript('${docItem.id}')">Edit</button>
 card.innerHTML=`
 
 <h3>${s.name}</h3>
-
 <p>${s.desc || ''}</p>
-
 <pre>${s.code}</pre>
-
 <button onclick="copyScript('${s.code}')">Copy</button>
-
 ${actions}
 
 `;
@@ -459,7 +476,6 @@ if(user){
 
 login.style.display="none";
 loginBtn.style.display="none";
-
 userInfo.style.display="flex";
 
 userEmail.innerText=user.email;
@@ -470,7 +486,6 @@ userPhoto.src=`https://www.gravatar.com/avatar/${md5(user.email.trim().toLowerCa
 
 login.style.display="block";
 loginBtn.style.display="inline-block";
-
 userInfo.style.display="none";
 
 }
@@ -482,15 +497,10 @@ loadItems();
 loadItems();
 
 function md5(str){
-
 return str.split('').reduce((hash,char)=>{
-
 hash=((hash<<5)-hash)+char.charCodeAt(0);
-
 return hash & hash;
-
 },0);
-
 }
 
 </script>
