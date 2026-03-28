@@ -1,538 +1,355 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AT Script Hub V.5.0.0</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 LUA HUB - KEY GENERATOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-body{
-  background:#0f0f0f;
-  color:white;
-  font-family:Arial;
-  margin:0;
-}
-#logo{
-  font-size:60px;
-  text-align:center;
-  color:#00ffc8;
-  margin:20px;
-}
-nav{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-nav button{
-  padding:10px 20px;
-  background:#00ffc8;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-}
-.page{
-  display:none;
-  padding:20px;
-}
-.active{
-  display:block;
-}
-.grid{
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-}
-.card{
-  background:#1c1c1c;
-  padding:15px;
-  border-radius:10px;
-  box-shadow:0 0 10px #00ffc8;
-}
-input,textarea,select{
-  width:100%;
-  padding:10px;
-  margin-top:5px;
-  background:#222;
-  border:none;
-  border-radius:5px;
-  color:white;
-}
-button{
-  margin-top:10px;
-}
-#userInfo{
-  position:fixed;
-  top:10px;
-  right:10px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:14px;
-}
-#userInfo img{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            color: white;
+        }
 
-/* LOADING SCREEN */
-#loadingScreen {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:#0f0f0f;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-#loadingScreen h1{
-  color:#00ffc8;
-  font-size:70px;
-  margin:0;
-  font-family:Arial, sans-serif;
-}
-#loadingScreen p{
-  color:#00ffc8;
-  font-size:20px;
-  margin-top:10px;
-}
-</style>
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #4ecdc4; }
+            to { text-shadow: 0 0 30px #4ecdc4, 0 0 40px #4ecdc4; }
+        }
+
+        .logo {
+            font-size: 4.5em;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-weight: 900;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .tagline {
+            color: #4ecdc4;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        /* REQUIREMENT - SUPER SIMPLE */
+        .requirement {
+            background: linear-gradient(135deg, rgba(78,205,196,0.25), rgba(69,183,209,0.25));
+            border: 4px solid #4ecdc4;
+            border-radius: 25px;
+            padding: 35px;
+            margin-bottom: 35px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(78,205,196,0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .requirement::before {
+            content: '🎮 JUST 1 STEP';
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: rgba(78,205,196,0.4);
+            color: #4ecdc4;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .roblox-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .roblox-icon {
+            font-size: 6em;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(0,212,255,0.7));
+        }
+
+        .follow-info h3 {
+            color: #4ecdc4;
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .follow-info p {
+            color: white;
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        .follow-btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            border-radius: 35px;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.4s ease;
+            box-shadow: 0 12px 35px rgba(0,212,255,0.5);
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .follow-btn:hover {
+            transform: translateY(-8px) scale(1.08);
+            box-shadow: 0 25px 50px rgba(0,212,255,0.7);
+        }
+
+        /* KEY GENERATOR */
+        .key-generator {
+            background: rgba(25, 25, 35, 0.97);
+            border: 4px solid #4ecdc4;
+            border-radius: 30px;
+            padding: 45px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 30px 70px rgba(78,205,196,0.45);
+            backdrop-filter: blur(25px);
+            text-align: center;
+        }
+
+        .key-title {
+            color: #4ecdc4;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            font-weight: 900;
+            text-shadow: 0 0 25px rgba(78,205,196,0.6);
+        }
+
+        .display-key {
+            font-family: 'Courier New', monospace;
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 6px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 4px solid rgba(78,205,196,0.6);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(78,205,196,0.4);
+            word-break: break-all;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 20px 50px rgba(78,205,196,0.4); }
+            50% { box-shadow: 0 20px 60px rgba(78,205,196,0.7); }
+        }
+
+        .copy-btn {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+            border: none;
+            padding: 25px 60px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 20px 45px rgba(78,205,196,0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(45deg, #ff6b6b, #f9ca24);
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(255,107,107,0.6);
+        }
+
+        .success-message {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 25px;
+            font-weight: bold;
+            font-size: 1.3em;
+            opacity: 0;
+            transform: translateY(25px);
+            transition: all 0.6s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .instructions {
+            background: rgba(45, 45, 55, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 35px;
+            text-align: left;
+        }
+
+        .instructions h4 {
+            color: #4ecdc4;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+
+        .instructions ol {
+            color: white;
+            font-size: 1.2em;
+            line-height: 1.9;
+        }
+
+        .instructions li {
+            margin-bottom: 12px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            color: #a0a0a0;
+            font-size: 1.1em;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .roblox-box { flex-direction: column; text-align: center; }
+            .roblox-icon { margin-right: 0; margin-bottom: 20px; }
+            .logo { font-size: 3.5em; }
+        }
+    </style>
 </head>
 <body>
-
-<!-- LOADING SCREEN -->
-<div id="loadingScreen">
-  <h1>AT™</h1>
-  <p>Loading...</p>
-</div>
-
-<div id="logo">AT™ Script Hub</div>
-
-<div id="userInfo" style="display:none">
-  <img id="userPhoto" src="">
-  <span id="userEmail"></span>
-  <span>V.5.0.0</span>
-  <button onclick="logout()">Logout</button>
-</div>
-
-<nav>
-  <button onclick="showPage('games')">Games</button>
-  <button onclick="showPage('scripts')">Scripts</button>
-  <button onclick="showPage('upload')">Upload</button>
-  <button id="loginBtn" onclick="showPage('login')">Login</button>
-</nav>
-
-<div id="login" class="page">
-<h2>Login / Register</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="register()">Register</button>
-<button onclick="login()">Login</button>
-<p id="loginMsg"></p>
-</div>
-
-<div id="games" class="page active">
-<h2>Games</h2>
-<div id="gameList" class="grid"></div>
-</div>
-
-<div id="scripts" class="page">
-<h2>Scripts</h2>
-<div id="scriptList" class="grid"></div>
-</div>
-
-<div id="upload" class="page">
-<h2>Upload</h2>
-
-<select id="uploadType" onchange="updateUploadFields()">
-<option value="game">Game</option>
-<option value="script">Script</option>
-</select>
-
-<input id="itemName" placeholder="Nama">
-
-<input id="itemLink" placeholder="Link (untuk game)">
-
-<textarea id="itemCode" placeholder="Script Code (untuk script)"></textarea>
-
-<textarea id="itemDesc" placeholder="Deskripsi (opsional)"></textarea>
-
-<button onclick="uploadItem()">Upload</button>
-</div>
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-signOut,
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs,
-doc,
-updateDoc,
-deleteDoc,
-getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-
-apiKey: "AIzaSyBZPDqoF3pqPvVXVigbfBlolHAakohx_VY",
-authDomain: "at-data-174bc.firebaseapp.com",
-projectId: "at-data-174bc",
-storageBucket: "at-data-174bc.firebasestorage.app",
-messagingSenderId: "278571146405",
-appId: "1:278571146405:web:bb7fbacf8ec3fb54fec14c",
-measurementId: "G-8PYQB40E2B"
-
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let currentUser = null;
-let viewedGames = new Set();
-
-window.showPage = function(page){
-
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(page).classList.add("active");
-
-};
-
-window.register = async function(){
-
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
-
-try{
-
-await createUserWithEmailAndPassword(auth,email,pass);
-
-loginMsg.innerText="Register berhasil";
-
-}catch(e){
-
-loginMsg.innerText=e.message;
-
-}
-
-};
-
-window.login = async function(){
-
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
-
-try{
-
-await signInWithEmailAndPassword(auth,email,pass);
-
-loginMsg.innerText="Login berhasil";
-
-}catch(e){
-
-loginMsg.innerText=e.message;
-
-}
-
-};
-
-/* LOGIN LOGIC TAMBAHAN */
-window.logout = function(){
-signOut(auth);
-loginBtn.style.display = "inline-block"; // munculkan tombol login saat logout
-};
-
-window.updateUploadFields = function(){
-
-const type = document.getElementById("uploadType").value;
-
-if(type==="game"){
-
-itemLink.style.display="block";
-itemCode.style.display="none";
-
-}else{
-
-itemLink.style.display="block";
-itemCode.style.display="block";
-
-}
-
-};
-
-window.uploadItem = async function(){
-
-if(!currentUser){
-
-alert("Login dulu");
-return;
-
-}
-
-let type = uploadType.value;
-let name = itemName.value;
-let link = itemLink.value;
-let code = itemCode.value;
-let desc = itemDesc.value;
-
-if(!name){
-
-alert("Nama wajib diisi");
-return;
-
-}
-
-await addDoc(collection(db,type+"s"),{
-
-name,
-link,
-code,
-desc,
-user:currentUser.email,
-views:0
-
-});
-
-loadItems();
-
-};
-
-window.playGame = async function(id,link){
-
-if(!viewedGames.has(id)){
-
-const docRef = doc(db,"games",id);
-
-await updateDoc(docRef,{views:1});
-
-viewedGames.add(id);
-
-}
-
-window.open(link);
-
-};
-
-window.copyScript = function(code){
-
-navigator.clipboard.writeText(code);
-
-alert("Script copied!");
-
-};
-
-/* EDIT SCRIPT */
-
-window.editScript = async function(id){
-
-const docRef = doc(db,"scripts",id);
-
-const snap = await getDoc(docRef);
-
-if(!snap.exists()) return;
-
-const data = snap.data();
-
-if(currentUser.email !== data.user && currentUser.email !== "evosrezasyah@gmail.com"){
-
-alert("Kamu tidak punya izin edit!");
-
-return;
-
-}
-
-const newName = prompt("Edit Nama", data.name);
-const newDesc = prompt("Edit Deskripsi", data.desc || "");
-const newCode = prompt("Edit Script", data.code);
-
-await updateDoc(docRef,{
-name:newName,
-desc:newDesc,
-code:newCode
-});
-
-loadItems();
-
-};
-
-/* EDIT GAME (DITAMBAHKAN) */
-
-window.editGame = async function(id){
-
-const docRef = doc(db,"games",id);
-const snap = await getDoc(docRef);
-
-if(!snap.exists()) return;
-
-const data = snap.data();
-
-if(currentUser.email !== data.user && currentUser.email !== "evosrezasyah@gmail.com"){
-
-alert("Kamu tidak punya izin edit!");
-return;
-
-}
-
-const newName = prompt("Edit Nama Game", data.name);
-const newDesc = prompt("Edit Deskripsi", data.desc || "");
-const newLink = prompt("Edit Link Game", data.link);
-
-await updateDoc(docRef,{
-name:newName,
-desc:newDesc,
-link:newLink
-});
-
-loadItems();
-
-};
-
-window.deleteItem = async function(type,id){
-
-if(!currentUser) return;
-
-const docRef = doc(db,type,id);
-const snap = await getDoc(docRef);
-
-if(!snap.exists()) return;
-
-const data = snap.data();
-
-if(currentUser.email !== data.user && currentUser.email !== "evosrezasyah@gmail.com"){
-
-alert("Kamu tidak punya izin untuk menghapus ini!");
-return;
-
-}
-
-await deleteDoc(docRef);
-
-loadItems();
-
-};
-
-async function loadItems(){
-
-const gameList = document.getElementById("gameList");
-gameList.innerHTML="";
-
-const gameSnap = await getDocs(collection(db,"games"));
-
-gameSnap.forEach(docItem=>{
-
-let g = docItem.data();
-
-let card = document.createElement("div");
-card.className="card";
-
-let actions='';
-
-if(currentUser && (currentUser.email===g.user || currentUser.email==='evosrezasyah@gmail.com')){
-
-actions=`<button onclick="editGame('${docItem.id}')">Edit</button>
-<button onclick="deleteItem('games','${docItem.id}')">Delete</button>`;
-
-}
-
-card.innerHTML=`
-
-<h3>${g.name}</h3>
-<p>${g.desc || ''}</p>
-<button onclick="playGame('${docItem.id}','${g.link}')">Play</button>
-${actions}
-
-`;
-
-gameList.appendChild(card);
-
-});
-
-const scriptList = document.getElementById("scriptList");
-scriptList.innerHTML="";
-
-const scriptSnap = await getDocs(collection(db,"scripts"));
-
-scriptSnap.forEach(docItem=>{
-
-let s = docItem.data();
-
-let card = document.createElement("div");
-card.className="card";
-
-let actions='';
-
-if(currentUser && (currentUser.email===s.user || currentUser.email==='evosrezasyah@gmail.com')){
-
-actions=`<button onclick="editScript('${docItem.id}')">Edit</button>
-<button onclick="deleteItem('scripts','${docItem.id}')">Delete</button>`;
-
-}
-
-card.innerHTML=`
-
-<h3>${s.name}</h3>
-<p>${s.desc || ''}</p>
-<pre>${s.code}</pre>
-<button onclick="copyScript('${s.code}')">Copy</button>
-${actions}
-
-`;
-
-scriptList.appendChild(card);
-
-});
-
-}
-
-/* AUTH STATE CHANGE + LOADING SCREEN & LOGIN BUTTON HIDING */
-onAuthStateChanged(auth,user=>{
-
-currentUser=user;
-
-/* TAMPILKAN LOADING SCREEN SAAT MASUK DAN HILANGKAN */
-setTimeout(()=>{document.getElementById('loadingScreen').style.display='none';},500);
-
-if(user){
-login.style.display="none";
-loginBtn.style.display="none"; // tombol login hilang saat sudah login
-userInfo.style.display="flex";
-userEmail.innerText=user.email;
-userPhoto.src=`https://www.gravatar.com/avatar/${md5(user.email.trim().toLowerCase())}?d=identicon`;
-}else{
-login.style.display="block";
-loginBtn.style.display="inline-block"; // tombol login muncul saat logout
-userInfo.style.display="none";
-}
-
-loadItems();
-
-});
-
-loadItems();
-
-function md5(str){
-return str.split('').reduce((hash,char)=>{
-hash=((hash<<5)-hash)+char.charCodeAt(0);
-return hash & hash;
-},0);
-}
-
-</script>
+    <div class="header">
+        <div class="logo">⚽</div>
+        <h1>LUA HUB</h1>
+        <p class="tagline">FREE KEY GENERATOR</p>
+    </div>
+
+    <!-- REQUIREMENT -->
+    <div class="requirement">
+        <div class="roblox-box">
+            <span class="roblox-icon">👑</span>
+            <div class="follow-info">
+                <h3>ahza_12310</h3>
+                <p><strong>FOLLOW ON ROBLOX</strong></p>
+                <p>Super easy! 1 minute to unlock all features</p>
+            </div>
+        </div>
+        <a href="https://www.roblox.com/users/YOUR_USER_ID/profile" target="_blank" class="follow-btn">
+            🚀 FOLLOW NOW
+        </a>
+    </div>
+
+    <!-- KEY GENERATOR -->
+    <div class="key-generator">
+        <div class="key-title">🔑 YOUR KEY:</div>
+        <div class="display-key" id="displayKey">thankyouforscript</div>
+        
+        <div>
+            <button class="copy-btn" onclick="copyKey()">
+                📋 COPY TO CLIPBOARD
+            </button>
+            <div class="success-message" id="successMessage">
+                ✅ Key copied successfully! Paste directly into Roblox script!
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h4>🎮 HOW TO USE (30 SECONDS):</h4>
+            <ol>
+                <li>Copy the key above</li>
+                <li>Execute Lua Hub script</li>
+                <li>Paste key into input box</li>
+                <li>Click VERIFY → DONE! 🔥</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="footer">
+        <strong>MADE BY ahza_12310</strong><br>
+        Key works forever | No screenshot needed!
+    </div>
+
+    <script>
+        // REPLACE YOUR_USER_ID with ahza_12310's Roblox ID
+        document.querySelector('.follow-btn').href = 'https://www.roblox.com/users/123456789/profile';
+
+        function copyKey() {
+            const key = "thankyouforscript";
+            navigator.clipboard.writeText(key).then(() => {
+                const successMessage = document.getElementById('successMessage');
+                const displayKey = document.getElementById('displayKey');
+                
+                displayKey.style.animation = 'none';
+                setTimeout(() => {
+                    displayKey.style.animation = 'pulse 2s infinite';
+                }, 50);
+                
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 4500);
+            }).catch(() => {
+                alert('KEY: thankyouforscript\nCopy manually bro!');
+            });
+        }
+
+        // Auto copy after 2.5 seconds
+        setTimeout(copyKey, 2500);
+
+        // Prevent right click & inspect
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = e => {
+            if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
+                return false;
+            }
+        };
+    </script>
 </body>
 </html>
